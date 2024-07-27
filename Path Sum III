@@ -1,0 +1,112 @@
+1.
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    long long f(TreeNode* root, long long targetSum, long long flag){
+        if(root==NULL){
+            return false;
+        }
+
+        long long ans=0;
+
+        if(targetSum-root->val==0){
+            ans++;
+        }
+
+        ans+=f(root->left, targetSum-root->val, 1);
+        ans+=f(root->right, targetSum-root->val, 1);
+
+        if(flag==0){
+            ans+=f(root->left, targetSum, 0);
+            ans+=f(root->right, targetSum, 0);
+        }
+
+        return ans;
+    }
+    int pathSum(TreeNode* root, int targetSum) {
+        if(root==NULL){
+           return 0;
+        }
+        int ans=0;
+        ans=f(root,targetSum,0);
+        // queue<TreeNode*> q;
+        // q.push(root);
+        // while(!q.empty()){
+        //     int n=q.size();
+        //     for(int i=0; i<n; i++){
+        //         TreeNode* temporary=q.front();
+        //         q.pop();
+        //         ans+=f(temporary,targetSum);
+        //         if(temporary->left){
+        //             q.push(temporary->left);
+        //         }
+        //         if(temporary->right){
+        //             q.push(temporary->right);
+        //         }
+        //     }
+        // }
+        
+
+
+        // another approach - https://youtu.be/x87RihNvRaY?si=0anMd0_t5-Ft-c8a
+
+        
+        return ans;
+    }
+};
+
+2.
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+
+
+    int sum(TreeNode* root, int targetSum, vector<int> &v){
+        if(root==NULL) return 0;
+        int cnt=0;
+        v.push_back(root->val);
+        long long tempTar=targetSum;
+        // long long as aage isme se - hona h aur  hm -ve me bhi jaate h according to constraints.
+        //To ho sakta h ki -ve me overflor ho jaye
+
+
+        for(int i=v.size()-1; i>=0; i--){
+            tempTar-=v[i];
+            if(tempTar==0) cnt++;
+        }
+
+        cnt+=sum(root->left, targetSum,v);
+        cnt+=sum(root->right, targetSum,v);
+        
+        v.pop_back();
+
+        return cnt;
+    }
+
+    int pathSum(TreeNode* root, int targetSum) {
+        vector<int> v;
+        return sum(root, targetSum, v);
+    }
+};
