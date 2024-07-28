@@ -1,0 +1,43 @@
+class Solution {
+public:
+
+    // int f(int s, int e,vector<vector<int>> &dp){
+    //     if(s>=e) return 1;
+    //     if(dp[s][e]!=-1) return dp[s][e];
+    //     int ans=0;
+    //     for(int i=s; i<=e; i++){
+    //         int l=f(s,i-1, dp);
+    //         int r=f(i+1,e, dp);
+    //         ans+=l*r;
+    //     }
+    //     return dp[s][e]=ans;
+    // }
+
+    // int numTrees(int n) {
+    //     vector<vector<int>> dp(n+1, vector<int>(n+1,-1));
+    //     return f(1,n, dp);
+    // }
+
+    int numTrees(int n) {
+        vector<vector<int>> dp(n+2, vector<int>(n+2,0));
+        //base case
+        for(int e=0; e<n+2; e++){
+            for(int s=e+1; s<n+2; s++){
+                dp[s][e]=1;
+            }
+        }
+
+         for(int s=n; s>=1; s--){
+            for(int e=s; e<=n; e++){
+                int ans=0;
+                for(int i=s; i<=e; i++){
+                    int l=dp[s][i-1];
+                    int r=dp[i+1][e];
+                    ans+=l*r;
+                }
+                dp[s][e]=ans;
+            }
+         }
+         return dp[1][n];
+    }
+};
