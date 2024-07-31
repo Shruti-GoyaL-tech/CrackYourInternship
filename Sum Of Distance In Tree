@@ -1,0 +1,109 @@
+class Solution {
+public:
+
+
+    void find_children(int node, map<int, list<int>> &mp, vector<int> &noc, int parent){
+        // if(mp[node].size()==1 && mp[node].front()==parent){
+        //     noc[node]=1;
+        //     return;
+        // }
+
+        for(auto nodes:mp[node]){
+            if(nodes!=parent){
+                find_children(nodes, mp, noc, node);
+                noc[node]+=noc[nodes];
+            }
+        }
+        return;
+        
+    }
+
+    vector<int> sumOfDistancesInTree(int n, vector<vector<int>>& edges) {
+        // map<int, list<int>> mp;
+        // for(int i=0; i<edges.size(); i++){
+        //     mp[edges[i][0]].push_back(edges[i][1]);
+        //     mp[edges[i][1]].push_back(edges[i][0]);
+        // }
+        // vector<int> ans(n,0);
+        // for(int i=0; i<n; i++){
+        //     map<int,int>parent;
+        //     for(int i=0; i<n; i++){
+        //         parent[i]=-1;
+        //     }
+        //     queue<int> q;
+        //     for(auto node:mp[i]){
+        //         parent[node]=i;
+        //         q.push(node);
+        //     }
+        //     int num=1;
+        //     while(!q.empty()){
+        //         int qsize=q.size();
+        //         ans[i]+=num*qsize;
+        //         for(int j=0; j<qsize; j++){
+        //             int f=q.front();
+        //             q.pop();
+        //             for(auto node:mp[f]){
+        //                 if(node==parent[f]) continue;
+        //                 parent[node]=f;
+        //                 q.push(node);
+        //             }
+        //         }
+        //         num++;
+        //     }
+        // }
+        // return ans;
+
+
+        map<int, list<int>> mp;
+        for(int i=0; i<edges.size(); i++){
+            mp[edges[i][0]].push_back(edges[i][1]);
+            mp[edges[i][1]].push_back(edges[i][0]);
+        }
+
+        vector<int> children(n,1);
+        find_children(0, mp, children, -1);
+    
+        vector<int> ans(n,0);
+        map<int,int>parent;
+        for(int i=0; i<n; i++){
+            parent[i]=-1;
+        }
+        queue<int> q;
+        for(auto node:mp[0]){
+            parent[node]=0;
+            q.push(node);
+        }
+        int num=1;
+        while(!q.empty()){
+            int qsize=q.size();
+            ans[0]+=num*qsize;
+            for(int j=0; j<qsize; j++){
+                int f=q.front();
+                q.pop();
+                for(auto node:mp[f]){
+                    if(node==parent[f]) continue;
+                    parent[node]=f;
+                    q.push(node);
+                }
+            }
+            num++;
+        }
+
+        for(auto node:mp[0]){
+            q.push(node);
+        }
+        while(!q.empty()){
+            int qsize=q.size();
+            for(int j=0; j<qsize; j++){
+                int f=q.front();
+                q.pop();
+                ans[f]=ans[parent[f]]-children[f]+(n-children[f]);
+                for(auto node:mp[f]){
+                    if(node==parent[f]) continue;
+                    q.push(node);
+                }
+            }
+        }
+        return ans;
+    }
+};
