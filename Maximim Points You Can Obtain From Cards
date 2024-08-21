@@ -1,0 +1,23 @@
+class Solution {
+public:
+    int maxScore(vector<int>& cardPoints, int k) {
+        int n=cardPoints.size();
+        //made a sum array
+        for(int i=1; i<n; i++){
+            cardPoints[i]+=cardPoints[i-1];
+        }
+        //checked if equal to size directly return
+        if(n-k==0) return cardPoints[n-1];
+        //initializing the ans from the only condition which donot satisfy the loop
+        //such that loop ke andar alag se case na banana pade 
+        int ans=cardPoints[n-1]-cardPoints[n-k-1];
+        int total=cardPoints[n-1];
+        int i=k-1;
+        int j=n-1;
+        while(i>=0){
+            //condition to check all other cards picking possibilities
+            ans=max(ans,cardPoints[i--]+total-cardPoints[j--]);
+        }
+        return ans;
+    }
+};
