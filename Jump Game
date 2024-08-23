@@ -1,0 +1,18 @@
+class Solution {
+public:
+    bool canJump(vector<int>& nums) {
+        int indZero=-1;
+        for(int i=nums.size()-2; i>=0; i--){
+            if(nums[i]==0 && indZero==-1){
+                indZero=i;
+            }
+            else if(indZero-i<nums[i]){
+                indZero=-1;
+            }
+        }
+        if(indZero==-1){
+            return true;
+        }
+        return false;
+    }
+};
