@@ -1,0 +1,29 @@
+class Solution {
+    vector<int> delRow={0,0,-1,1};
+    vector<int> delCol={-1,1,0,0};
+public:
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        vector<vector<int>> ans=image;
+        if(image[sr][sc]==color) return ans;
+        int row=image.size();
+        int col=image[0].size();
+        int replace=image[sr][sc];
+        queue<pair<int,int>>q;
+        ans[sr][sc]=color;
+        q.push({sr,sc});
+        while(!q.empty()){
+            int currRow=q.front().first;
+            int currCol=q.front().second;
+            q.pop();
+            for(int k=0;k<4; k++){
+                int newR=currRow+delRow[k];
+                int newC=currCol+delCol[k];
+                if(newR>=0&&newR<row&&newC>=0&&newC<col&&ans[newR][newC]==replace){
+                    ans[newR][newC]=color;
+                    q.push({newR,newC});
+                }
+            }
+        }
+        return ans;
+    }
+};
