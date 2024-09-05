@@ -1,0 +1,39 @@
+class Solution 
+{   
+    vector<int> delRow={-2,-2,2,2,-1,-1,1,1};
+    vector<int> delCol={-1,1,-1,1,2,-2,-2,2};
+    public:
+    //Function to find out minimum steps Knight needs to reach target position.
+	int minStepToReachTarget(vector<int>&KnightPos,vector<int>&TargetPos,int N)
+	{
+	    // Code here
+	    int cnt=1e9;
+	    priority_queue<pair<int,pair<int,int>>, vector<pair<int,pair<int,int>>>, greater<pair<int,pair<int,int>>>>q;
+	    vector<vector<int>> dist(N,vector<int>(N,1e9));
+	    q.push({0,{KnightPos[0]-1,KnightPos[1]-1}});
+	    while(!q.empty()){
+	        int currcnt=q.top().first;
+	        int currrow=q.top().second.first;
+	        int currcol=q.top().second.second;
+	        q.pop();
+	       
+	        if(currrow==TargetPos[0]-1 && currcol==TargetPos[1]-1){
+	            cnt=min(cnt,currcnt);
+	        }
+	        else{
+	            currcnt++;
+	            for(int i=0; i<8; i++){
+	                if(currrow+delRow[i]<0||currrow+delRow[i]>=N||currcol+delCol[i]<0||currcol+delCol[i]>=N){
+	                   continue;
+	                }
+	                if(dist[currrow+delRow[i]][currcol+delCol[i]]>currcnt){
+	                    q.push({currcnt,{currrow+delRow[i],currcol+delCol[i]}});
+	                    dist[currrow+delRow[i]][currcol+delCol[i]]=currcnt;
+	                }
+	                
+	            }
+	        }
+	    }
+	    return cnt;
+	}
+};
