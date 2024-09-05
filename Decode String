@@ -1,0 +1,89 @@
+// class Solution {
+// public:
+//     string decodeString(string s) {
+//         stack<pair<char,string>> st;
+//         for(int i=0; i<s.length(); i++){
+//             string ans="";
+//             int repeat=0;
+//             if(s[i]==']'){
+//                 while(st.top().first!='['){
+//                     ans=st.top().second+ans;
+//                     st.pop();
+//                 }
+//                 st.pop();
+//                 int ten=1;
+//                 while(!st.empty() && st.top().first>='0' && st.top().first<='9'){
+//                     repeat+=(st.top().first-'0')*ten;
+//                     ten*=10;
+//                     st.pop();
+//                 }
+//                 string final="";
+//                 while(repeat--){
+//                     final=final+ans;
+//                 }
+//                 st.push({'a',final});
+//             }
+//             else{
+//                 string str="";
+//                 st.push({s[i], str+s[i]});
+//             }
+//         }
+//         string ret="";
+//         while(!st.empty()){
+//             ret=st.top().second+ret;
+//             st.pop();
+//         }
+//         return ret;
+//     }
+// };
+
+class Solution {
+public:
+    string decodeString(string s) {
+        stack<string> st;
+        string ans="";
+        for(int i=0; i<s.length(); i++){
+            if(s[i]==']'){
+                string subans="";
+                int repeat=0;
+                string str="";
+                while(!st.empty()&&(st.top()<"0"||st.top()>"9")){
+                    if(st.top()=="["){
+                        st.pop();
+                        continue;
+                    }
+                    str=st.top()+str;
+                    st.pop();
+                }
+                int ten=1;
+                while(!st.empty()&&(st.top()>="0"&&st.top()<="9")){
+                    repeat+=ten*(st.top()[0]-'0');
+                    ten*=10;
+                    st.pop();
+                }
+                while(repeat>0){
+                    subans+=str;
+                    repeat--;
+                }
+                if(!st.empty()){
+                    st.push(subans);
+                }
+                else{
+                    ans+=subans;
+                }
+            }
+            else{
+                string temp="";
+                temp+=s[i];
+                st.push(temp);
+            }
+        }
+        string subans="";
+        while(!st.empty()){
+            subans=st.top()+subans;
+            st.pop();
+        }
+        ans+=subans;
+        return ans;
+    }
+};
