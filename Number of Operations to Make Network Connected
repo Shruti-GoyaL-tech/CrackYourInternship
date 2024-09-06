@@ -1,0 +1,69 @@
+class disjoint{
+    int n;
+    vector<int> parent;
+    vector<int> size;
+    public:
+    disjoint(int node){
+        n=node;
+        for(int i=0; i<n; i++){
+            parent.push_back(i);
+            size.push_back(-1);
+        }
+    }
+    void unions(int u, int v){
+        if(size[u]>=size[v]){
+            parent[v]=u;
+            size[u]+=size[v];
+        }
+        else{
+            parent[u]=v;
+            size[v]+=size[u];
+        }
+    }
+    int find_parent(int u){
+        if(parent[u]==u) return u;
+        return parent[u]=find_parent(parent[u]);
+    }
+};
+
+class Solution {
+public:
+
+
+    void dfs(int node, vector<vector<int>>& connections, vector<int>& vis){
+        vis[node]=1;
+        for(auto i: connections[node]){
+            if(vis[i]==0){
+                dfs(i, connections, vis);
+            }
+        }
+    }
+
+    int makeConnected(int n, vector<vector<int>>& connections) {
+        int extra=0;
+        disjoint ds(n);
+        vector<vector<int>> adj(n);
+        for(int i=0; i<connections.size(); i++){
+            adj[connections[i][0]].push_back(connections[i][1]);
+            adj[connections[i][1]].push_back(connections[i][0]);
+            int u=ds.find_parent(connections[i][0]);
+            int v=ds.find_parent(connections[i][1]);
+            if(u==v){
+                extra++;
+            }
+            else{
+                ds.unions(u,v);
+            }
+        }
+        int dis_com=0;
+        vector<int> vis(n);
+        for(int i=0; i<n; i++){
+            if(!vis[i]){
+                dis_com++;
+                dfs(i, adj, vis);
+            }
+        }
+        if(extra>=(dis_com-1)) return (dis_com-1);
+        return -1;
+    }
+};
