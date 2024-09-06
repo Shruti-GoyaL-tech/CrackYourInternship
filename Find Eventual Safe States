@@ -1,0 +1,46 @@
+class Solution {
+public:
+
+
+    bool dfs(int node, vector<vector<int>>& graph, vector<bool> &indfs, vector<bool> &vis, vector<int> &chk){
+        vis[node]=1;
+        indfs[node]=1;
+        bool cycle=false;
+        for(auto i:graph[node]){
+            if(!vis[i]){
+                cycle=cycle|dfs(i, graph, indfs, vis, chk);
+            }
+            else if(indfs[i]){
+                cycle=true;
+            }
+            else{
+                if(chk[i]){
+                    cycle=true;
+                }
+            }
+        }
+        if(cycle==true){
+            chk[node]=true;
+        }
+        indfs[node]=0;
+        return cycle;
+    }
+
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        vector<bool> indfs(graph.size(),0);
+        vector<bool> vis(graph.size(),0);
+        vector<int> final;
+        vector<int> chk(graph.size(), 0);
+        for(int i=0; i<graph.size(); i++){
+            if(!vis[i]){
+                dfs(i, graph, indfs, vis, chk);
+            }
+        }
+        for(int i=0; i<chk.size(); i++){
+            if(!chk[i]){
+                final.push_back(i);
+            }
+        }
+        return final;
+    }
+};
