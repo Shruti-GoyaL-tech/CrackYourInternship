@@ -1,0 +1,64 @@
+class disjoint{
+    int n;
+    vector<int> parent;
+    vector<int> size;
+    // map<int,bool> chkone;
+    public:
+    disjoint(int n){
+        this->n=n;
+        for(int i=0; i<n; i++){
+            parent.push_back(i);
+            size.push_back(1);
+        }
+    }
+    int findParent(int u){
+        if(parent[u]==u) return u;
+        return parent[u]=findParent(parent[u]);
+    }
+    void unions(int u, int v){
+        // chkone[u]=true;
+        // chkone[v]=true;
+        int par_u=findParent(u);
+        int par_v=findParent(v);
+        if(size[par_u]>=size[par_v]){
+            parent[par_v]=par_u;
+            size[par_u]+=size[par_v];
+        }
+        else{
+            parent[par_u]=par_v;
+            size[par_v]+=size[par_u];
+        }
+    }
+    int getset(){
+        int cnt=0;
+        for(int i=0; i<n; i++){
+            if(parent[i]==i &&  size[i]!=1){
+                cnt++;
+            }
+        }
+        return cnt;
+    }
+};
+
+class Solution {
+public:
+    int removeStones(vector<vector<int>>& stones) {
+        int m=0;
+        int n=0;
+        for(int i=0; i<stones.size(); i++){
+            n=max(stones[i][0], n);
+            m=max(stones[i][1], m);
+        }
+        n++;
+        m++;
+        disjoint dj(m+n);
+        for(int i=0; i<stones.size(); i++){
+            int u=dj.findParent(stones[i][0]);
+            int v=dj.findParent(n+stones[i][1]);
+            if(u!=v){
+                dj.unions(u,v);
+            }
+        }
+        return stones.size()-dj.getset();
+    }
+};
