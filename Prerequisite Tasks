@@ -1,0 +1,39 @@
+class Solution {
+    bool chk_cycle(int node, vector<vector<int>> &adj, vector<bool> &vis, vector<bool> &indfs){
+        vis[node]=1;
+        indfs[node]=1;
+        bool cycle=false;
+        for(int i:adj[node]){
+            if(!vis[i]){
+                if(chk_cycle(i,adj,vis,indfs)){
+                    return true;
+                }
+            }
+            else if(indfs[i]){
+                return true;
+            }
+        }
+        indfs[node]=false;
+        return false;
+    }
+public:
+	bool isPossible(int N,int P, vector<pair<int, int> >& prerequisites) {
+	    // Code here
+	   vector<vector<int>> adj(N);
+	   for(auto i:prerequisites){
+	       adj[i.first].push_back(i.second);
+	   }
+	   vector<bool> vis(N,0);
+	   vector<bool> indfs(N,0);
+	   bool cycle=false;
+	   for(int i=0; i<N; i++){
+	       if(!vis[i]){
+	           cycle=cycle|chk_cycle(i, adj, vis, indfs);
+	           if(cycle){
+	               return false;
+	           }
+	       }
+	   }
+	   return true;
+	}
+};
